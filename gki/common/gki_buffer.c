@@ -459,20 +459,19 @@ UINT16 GKI_queue_length(BUFFER_Q *p_q)
 
 /*******************************************************************************
 **
-** Function         GKI_poolcount
+** Function         GKI_get_pool_bufsize
 **
-** Description      Called by an application to get the total number of buffers
-**                  in the specified buffer pool.
+** Description      Called by an application to get the size of buffers in a pool
 **
-** Parameters       pool_id - (input) pool ID to get the free count of.
+** Parameters       Pool ID.
 **
-** Returns          the total number of buffers in the pool
+** Returns          the size of buffers in the pool
 **
 *******************************************************************************/
-UINT16 GKI_poolcount (UINT8 pool_id)
+UINT16 GKI_get_pool_bufsize (UINT8 pool_id)
 {
-    if (pool_id >= GKI_NUM_TOTAL_BUF_POOLS)
-        return (0);
+    if (pool_id < GKI_NUM_TOTAL_BUF_POOLS)
+        return (gki_cb.com.freeq[pool_id].size);
 
-    return (gki_cb.com.freeq[pool_id].total);
+    return (0);
 }
