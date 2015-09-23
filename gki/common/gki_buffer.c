@@ -476,22 +476,3 @@ UINT16 GKI_poolcount (UINT8 pool_id)
 
     return (gki_cb.com.freeq[pool_id].total);
 }
-
-/*******************************************************************************
-**
-** Function         GKI_get_pool_bufsize
-**
-** Description      Called by an application to get the size of buffers in a pool
-**
-** Parameters       Pool ID.
-**
-** Returns          the size of buffers in the pool
-**
-*******************************************************************************/
-UINT16 GKI_get_pool_bufsize (UINT8 pool_id)
-{
-    if (pool_id < GKI_NUM_TOTAL_BUF_POOLS)
-        return (gki_cb.com.freeq[pool_id].size);
-
-    return (0);
-}
