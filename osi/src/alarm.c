@@ -58,7 +58,7 @@ extern bt_os_callouts_t *bt_os_callouts;
 // unit tests to run faster. It should not be modified by production code.
 int64_t TIMER_INTERVAL_FOR_WAKELOCK_IN_MS = 3000;
 static const clockid_t CLOCK_ID = CLOCK_BOOTTIME;
-static const char *WAKE_LOCK_ID = "bluedroid_timer";
+static const char *WAKE_LOCK_ID = "bluetooth_timer";
 
 // This mutex ensures that the |alarm_set|, |alarm_cancel|, and alarm callback
 // functions execute serially and not concurrently. As a result, this mutex also
