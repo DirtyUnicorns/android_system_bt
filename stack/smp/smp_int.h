@@ -24,7 +24,7 @@
 #ifndef SMP_INT_H
 #define SMP_INT_H
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 #include "btm_api.h"
 #include "btm_ble_api.h"
 #include "btu.h"

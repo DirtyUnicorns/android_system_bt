@@ -324,7 +324,7 @@ extern uint16_t GAP_ConnGetL2CAPCid(uint16_t gap_handle);
  ******************************************************************************/
 extern void GAP_Init(void);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 /*******************************************************************************
  *
  * Function         GAP_BleAttrDBUpdate

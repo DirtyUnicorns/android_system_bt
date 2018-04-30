@@ -1496,11 +1496,11 @@ single PDU.
 /*
  * Set if you have an older device without BLE and other advanced features
  */
-#ifndef BLE_DISABLED
-#define BLE_DISABLED FALSE
+#ifndef LEGACY_BT
+#define LEGACY_BT FALSE
 #endif
 
-#if (BLE_DISABLED == TRUE)
+#if (LEGACY_BT == TRUE)
 
 #ifdef BTA_HH_LE_INCLUDED
 #undef BTA_HH_LE_INCLUDED
@@ -1517,7 +1517,7 @@ single PDU.
 #define BLE_PRIVACY_SPT FALSE
 #define BTA_HH_LE_INCLUDED FALSE
 #define BTA_HOST_INTERLEAVE_SEARCH FALSE
-#endif /* BLE_DISABLED */
+#endif /* LEGACY_BT */
 
 
 #include "bt_trace.h"

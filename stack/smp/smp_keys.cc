@@ -23,7 +23,7 @@
  ******************************************************************************/
 #include "bt_target.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 #if (SMP_DEBUG == TRUE)
 #include <stdio.h>
 #endif

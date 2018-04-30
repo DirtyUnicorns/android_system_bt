@@ -271,7 +271,7 @@ void BTA_DmDiscoverUUID(const RawAddress& bd_addr, tSDP_UUID* uuid,
   p_msg->p_cback = p_cback;
   p_msg->sdp_search = sdp_search;
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   p_msg->num_uuid = 0;
   p_msg->p_uuid = NULL;
 #endif
@@ -616,7 +616,7 @@ void bta_dmexecutecallback(tBTA_DM_EXEC_CBACK* p_callback, void* p_param) {
  ******************************************************************************/
 void BTA_DmAddBleKey(const RawAddress& bd_addr, tBTA_LE_KEY_VALUE* p_le_key,
                      tBTA_LE_KEY_TYPE key_type) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
   tBTA_DM_API_ADD_BLEKEY* p_msg =
       (tBTA_DM_API_ADD_BLEKEY*)osi_calloc(sizeof(tBTA_DM_API_ADD_BLEKEY));
@@ -647,7 +647,7 @@ void BTA_DmAddBleKey(const RawAddress& bd_addr, tBTA_LE_KEY_VALUE* p_le_key,
  ******************************************************************************/
 void BTA_DmAddBleDevice(const RawAddress& bd_addr, tBLE_ADDR_TYPE addr_type,
                         tBT_DEVICE_TYPE dev_type) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTA_DM_API_ADD_BLE_DEVICE* p_msg = (tBTA_DM_API_ADD_BLE_DEVICE*)osi_calloc(
       sizeof(tBTA_DM_API_ADD_BLE_DEVICE));
 
@@ -676,7 +676,7 @@ void BTA_DmAddBleDevice(const RawAddress& bd_addr, tBLE_ADDR_TYPE addr_type,
  ******************************************************************************/
 void BTA_DmBlePasskeyReply(const RawAddress& bd_addr, bool accept,
                            uint32_t passkey) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTA_DM_API_PASSKEY_REPLY* p_msg =
       (tBTA_DM_API_PASSKEY_REPLY*)osi_calloc(sizeof(tBTA_DM_API_PASSKEY_REPLY));
 
@@ -704,7 +704,7 @@ void BTA_DmBlePasskeyReply(const RawAddress& bd_addr, bool accept,
  *
  ******************************************************************************/
 void BTA_DmBleConfirmReply(const RawAddress& bd_addr, bool accept) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTA_DM_API_CONFIRM* p_msg =
       (tBTA_DM_API_CONFIRM*)osi_calloc(sizeof(tBTA_DM_API_CONFIRM));
 
@@ -730,7 +730,7 @@ void BTA_DmBleConfirmReply(const RawAddress& bd_addr, bool accept) {
  ******************************************************************************/
 void BTA_DmBleSecurityGrant(const RawAddress& bd_addr,
                             tBTA_DM_BLE_SEC_GRANT res) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTA_DM_API_BLE_SEC_GRANT* p_msg =
       (tBTA_DM_API_BLE_SEC_GRANT*)osi_calloc(sizeof(tBTA_DM_API_BLE_SEC_GRANT));
 
@@ -765,7 +765,7 @@ void BTA_DmSetBlePrefConnParams(const RawAddress& bd_addr,
                                 uint16_t min_conn_int, uint16_t max_conn_int,
                                 uint16_t slave_latency,
                                 uint16_t supervision_tout) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTA_DM_API_BLE_CONN_PARAMS* p_msg = (tBTA_DM_API_BLE_CONN_PARAMS*)osi_calloc(
       sizeof(tBTA_DM_API_BLE_CONN_PARAMS));
 
@@ -794,7 +794,7 @@ void BTA_DmSetBlePrefConnParams(const RawAddress& bd_addr,
  *
  ******************************************************************************/
 void BTA_DmSetBleConnScanParams(uint32_t scan_interval, uint32_t scan_window) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTA_DM_API_BLE_SCAN_PARAMS* p_msg = (tBTA_DM_API_BLE_SCAN_PARAMS*)osi_calloc(
       sizeof(tBTA_DM_API_BLE_SCAN_PARAMS));
 
@@ -814,7 +814,7 @@ void BTA_DmBleStartAutoConn() {
 
   p_msg->hdr.event = BTA_DM_API_BLE_SET_BG_CONN_TYPE;
   bta_sys_sendmsg(p_msg);
-#endif  // BLE_DISABLED == FALSE
+#endif  // LEGACY_BT == FALSE
 }
 
 /*******************************************************************************
@@ -826,7 +826,7 @@ void BTA_DmBleStartAutoConn() {
  * Returns          void
  *
  ******************************************************************************/
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 static void bta_dm_discover_send_msg(const RawAddress& bd_addr,
                                      tBTA_SERVICE_MASK_EXT* p_services,
                                      tBTA_DM_SEARCH_CBACK* p_cback,
@@ -877,7 +877,7 @@ void BTA_DmDiscoverByTransport(const RawAddress& bd_addr,
                                tBTA_SERVICE_MASK_EXT* p_services,
                                tBTA_DM_SEARCH_CBACK* p_cback, bool sdp_search,
                                tBTA_TRANSPORT transport) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   bta_dm_discover_send_msg(bd_addr, p_services, p_cback, sdp_search, transport);
 #endif
 }
@@ -900,7 +900,7 @@ void BTA_DmDiscoverByTransport(const RawAddress& bd_addr,
 void BTA_DmDiscoverExt(const RawAddress& bd_addr,
                        tBTA_SERVICE_MASK_EXT* p_services,
                        tBTA_DM_SEARCH_CBACK* p_cback, bool sdp_search) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   bta_dm_discover_send_msg(bd_addr, p_services, p_cback, sdp_search,
                            BTA_TRANSPORT_UNKNOWN);
 #endif
@@ -926,7 +926,7 @@ void BTA_DmDiscoverExt(const RawAddress& bd_addr,
  * Returns          void
  *
  ******************************************************************************/
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 void BTA_DmSearchExt(tBTA_DM_INQ* p_dm_inq, tBTA_SERVICE_MASK_EXT* p_services,
                      tBTA_DM_SEARCH_CBACK* p_cback) {
   const size_t len = p_services ? (sizeof(tBTA_DM_API_SEARCH) +
@@ -980,7 +980,7 @@ void BTA_DmSearchExt(UNUSED_ATTR tBTA_DM_INQ* p_dm_inq,
 void BTA_DmBleUpdateConnectionParam(const RawAddress& bd_addr, uint16_t min_int,
                                     uint16_t max_int, uint16_t latency,
                                     uint16_t timeout) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTA_DM_API_UPDATE_CONN_PARAM* p_msg =
       (tBTA_DM_API_UPDATE_CONN_PARAM*)osi_calloc(
           sizeof(tBTA_DM_API_UPDATE_CONN_PARAM));
@@ -1021,7 +1021,7 @@ void BTA_DmBleConfigLocalPrivacy(bool privacy_enable) {
 #endif
 }
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 /*******************************************************************************
  *
  * Function         BTA_DmBleGetEnergyInfo
@@ -1172,7 +1172,7 @@ void BTA_DmCloseACL(const RawAddress& bd_addr, bool remove_dev,
   bta_sys_sendmsg(p_msg);
 }
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 /*******************************************************************************
  *
  * Function         BTA_DmBleObserve

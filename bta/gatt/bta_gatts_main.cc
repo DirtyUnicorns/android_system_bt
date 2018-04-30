@@ -24,7 +24,7 @@
 
 #include "bt_target.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include <string.h>
 
@@ -116,4 +116,4 @@ bool bta_gatts_hdl_event(BT_HDR* p_msg) {
   return (true);
 }
 
-#endif /* BLE_DISABLED */
+#endif /* LEGACY_BT */

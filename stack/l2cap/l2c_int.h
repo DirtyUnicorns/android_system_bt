@@ -435,7 +435,7 @@ typedef struct t_l2c_linkcb {
 
   tBT_TRANSPORT transport;
   uint8_t initiating_phys;  // LE PHY used for connection initiation
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBLE_ADDR_TYPE ble_addr_type;
   uint16_t tx_data_len; /* tx data length used in data length extension */
   fixed_queue_t* le_sec_pending_q; /* LE coc channels waiting for security check
@@ -513,7 +513,7 @@ typedef struct {
   tL2CAP_FIXED_CHNL_REG
       fixed_reg[L2CAP_NUM_FIXED_CHNLS]; /* Reg info for fixed channels */
 #endif
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   uint16_t num_ble_links_active; /* Number of LE links active */
   bool is_ble_connecting;
   RawAddress ble_connecting_bda;
@@ -650,7 +650,7 @@ extern void l2cu_tx_complete(tL2C_TX_COMPLETE_CB_INFO* p_cbi);
 #if (L2CAP_NON_FLUSHABLE_PB_INCLUDED == TRUE)
 extern void l2cu_set_non_flushable_pbf(bool);
 #endif
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 extern void l2cu_send_peer_ble_par_req(tL2C_LCB* p_lcb, uint16_t min_int,
                                        uint16_t max_int, uint16_t latency,
                                        uint16_t timeout);
@@ -753,7 +753,7 @@ extern void l2c_link_segments_xmitted(BT_HDR* p_msg);
 extern void l2c_pin_code_request(const RawAddress& bd_addr);
 extern void l2c_link_adjust_chnl_allocation(void);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 extern void l2c_link_processs_ble_num_bufs(uint16_t num_lm_acl_bufs);
 #endif
 
@@ -810,7 +810,7 @@ extern void l2c_fcr_stop_timer(tL2C_CCB* p_ccb);
 /* Functions provided by l2c_ble.cc
  ***********************************
 */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 extern bool l2cble_create_conn(tL2C_LCB* p_lcb);
 extern void l2cble_process_sig_cmd(tL2C_LCB* p_lcb, uint8_t* p,
                                    uint16_t pkt_len);

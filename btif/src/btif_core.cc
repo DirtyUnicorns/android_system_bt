@@ -265,7 +265,7 @@ int btif_is_enabled(void) {
 
 void btif_init_ok(UNUSED_ATTR uint16_t event, UNUSED_ATTR char* p_param) {
   BTIF_TRACE_DEBUG("btif_task: received trigger stack init event");
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   btif_dm_load_ble_local_keys();
 #endif
   BTA_EnableBluetooth(bte_dm_evt);
@@ -460,7 +460,7 @@ void btif_enable_bluetooth_evt(tBTA_STATUS status) {
 bt_status_t btif_disable_bluetooth(void) {
   LOG_INFO(LOG_TAG, "%s entered", __func__);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   btm_ble_multi_adv_cleanup();
   // TODO(jpawlowski): this should do whole BTA_VendorCleanup(), but it would
   // kill the stack now.
@@ -513,7 +513,7 @@ void btif_disable_bluetooth_evt(void) {
 bt_status_t btif_cleanup_bluetooth(void) {
   LOG_INFO(LOG_TAG, "%s entered", __func__);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   BTA_VendorCleanup();
 #endif
 
@@ -747,7 +747,7 @@ static void execute_storage_request(uint16_t event, char* p_param) {
       prop.val = (void*)buf;
       prop.len = sizeof(buf);
       if (prop.type == BT_PROPERTY_LOCAL_LE_FEATURES) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
         tBTM_BLE_VSC_CB cmn_vsc_cb;
         bt_local_le_features_t local_le_features;
 

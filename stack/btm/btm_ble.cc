@@ -28,7 +28,7 @@
 #include "bt_target.h"
 
 #include <base/bind.h>
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include <string.h>
 
@@ -2603,4 +2603,4 @@ void btm_ble_set_keep_rfu_in_auth_req(bool keep_rfu) {
 
 #endif /* BTM_BLE_CONFORMANCE_TESTING */
 
-#endif /* BLE_DISABLED */
+#endif /* LEGACY_BT */

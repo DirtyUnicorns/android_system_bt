@@ -20,7 +20,7 @@
 
 #include <string.h>
 #include "smp_int.h"
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 const char* const smp_br_state_name[SMP_BR_STATE_MAX + 1] = {
     "SMP_BR_STATE_IDLE", "SMP_BR_STATE_WAIT_APP_RSP",
     "SMP_BR_STATE_PAIR_REQ_RSP", "SMP_BR_STATE_BOND_PENDING",

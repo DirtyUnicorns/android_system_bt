@@ -24,7 +24,7 @@
 
 #include "bt_target.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include <string.h>
 #include "btm_ble_api.h"
@@ -311,4 +311,4 @@ static void smp_br_data_received(uint16_t channel, const RawAddress& bd_addr,
 
   osi_free(p_buf);
 }
-#endif /* BLE_DISABLED == FALSE */
+#endif /* LEGACY_BT == FALSE */

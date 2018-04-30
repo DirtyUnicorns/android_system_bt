@@ -15,6 +15,7 @@
  *  limitations under the License.
  *
  ******************************************************************************/
+#if (LEGACY_BT == FALSE)
 
 #include <base/logging.h>
 #include <base/strings/stringprintf.h>
@@ -24,8 +25,6 @@
 #include <queue>
 #include "gap_api.h"
 #include "gatt_api.h"
-
-#if (BLE_DISABLED == FALSE)
 
 using base::StringPrintf;
 
@@ -582,4 +581,4 @@ bool GAP_BleCancelReadPeerDevName(const RawAddress& peer_bda) {
   return (true);
 }
 
-#endif  /* BLE_DISABLED */
+#endif  /* LEGACY_BT */

@@ -40,7 +40,7 @@
 #include "hcimsgs.h"
 #include "l2c_int.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     #include "gatt_int.h"
 #endif
 
@@ -226,12 +226,12 @@ static bool btm_serv_trusted(tBTM_SEC_DEV_REC* p_dev_rec,
  *
  ******************************************************************************/
 bool BTM_SecRegister(tBTM_APPL_INFO* p_cb_info) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   BT_OCTET16 temp_value = {0};
 #endif
 
   BTM_TRACE_EVENT("%s application registered", __func__);
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   LOG_INFO(LOG_TAG, "%s p_cb_info->p_le_callback == 0x%p", __func__,
            p_cb_info->p_le_callback);
   if (p_cb_info->p_le_callback) {
@@ -244,11 +244,12 @@ bool BTM_SecRegister(tBTM_APPL_INFO* p_cb_info) {
   } else {
     LOG_WARN(LOG_TAG, "%s p_cb_info->p_le_callback == NULL", __func__);
   }
-
+#endif
   btm_cb.api = *p_cb_info;
+#if (LEGACY_BT == FALSE)
   LOG_INFO(LOG_TAG, "%s btm_cb.api.p_le_callback = 0x%p ", __func__,
            btm_cb.api.p_le_callback);
-#endif /* BLE_DISABLED == FALSE */
+#endif /* LEGACY_BT == FALSE */
   BTM_TRACE_EVENT("%s application registered", __func__);
   return (true);
 }
@@ -977,10 +978,14 @@ tBTM_STATUS btm_sec_bond_by_transport(const RawAddress& bd_addr,
   /* Finished if connection is active and already paired */
   if (((p_dev_rec->hci_handle != BTM_SEC_INVALID_HANDLE) &&
        transport == BT_TRANSPORT_BR_EDR &&
-       (p_dev_rec->sec_flags & BTM_SEC_AUTHENTICATED)) ||
-      ((p_dev_rec->ble_hci_handle != BTM_SEC_INVALID_HANDLE) &&
+       (p_dev_rec->sec_flags & BTM_SEC_AUTHENTICATED))
+#if (LEGACY_BT == FALSE)
+       || ((p_dev_rec->ble_hci_handle != BTM_SEC_INVALID_HANDLE) &&
        transport == BT_TRANSPORT_LE &&
-       (p_dev_rec->sec_flags & BTM_SEC_LE_AUTHENTICATED))) {
+       (p_dev_rec->sec_flags & BTM_SEC_LE_AUTHENTICATED))
+#endif
+     )
+  {
     BTM_TRACE_WARNING("BTM_SecBond -> Already Paired");
     return (BTM_SUCCESS);
   }
@@ -1004,7 +1009,7 @@ tBTM_STATUS btm_sec_bond_by_transport(const RawAddress& bd_addr,
   p_dev_rec->is_originator = true;
   if (trusted_mask)
     BTM_SEC_COPY_TRUSTED_DEVICE(trusted_mask, p_dev_rec->trusted_mask);
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if (transport == BT_TRANSPORT_LE) {
     btm_ble_init_pseudo_addr(p_dev_rec, bd_addr);
     p_dev_rec->sec_flags &= ~BTM_SEC_LE_MASK;
@@ -1122,7 +1127,7 @@ tBTM_STATUS btm_sec_bond_by_transport(const RawAddress& bd_addr,
 tBTM_STATUS BTM_SecBondByTransport(const RawAddress& bd_addr,
                                    tBT_TRANSPORT transport, uint8_t pin_len,
                                    uint8_t* p_pin, uint32_t trusted_mask[]) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBT_DEVICE_TYPE dev_type;
   tBLE_ADDR_TYPE addr_type;
 
@@ -1158,7 +1163,7 @@ tBTM_STATUS BTM_SecBondByTransport(const RawAddress& bd_addr,
 tBTM_STATUS BTM_SecBond(const RawAddress& bd_addr, uint8_t pin_len,
                         uint8_t* p_pin, uint32_t trusted_mask[]) {
   tBT_TRANSPORT transport = BT_TRANSPORT_BR_EDR;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if (BTM_UseLeLink(bd_addr)) transport = BT_TRANSPORT_LE;
 #endif
   return btm_sec_bond_by_transport(bd_addr, transport, pin_len, p_pin,
@@ -1186,7 +1191,7 @@ tBTM_STATUS BTM_SecBondCancel(const RawAddress& bd_addr) {
   if (!p_dev_rec || btm_cb.pairing_bda != bd_addr) {
     return BTM_UNKNOWN_ADDR;
   }
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if (btm_cb.pairing_flags & BTM_PAIR_FLAGS_LE_ACTIVE) {
     if (p_dev_rec->sec_state == BTM_SEC_STATE_AUTHENTICATING) {
       BTM_TRACE_DEBUG("Cancel LE pairing");
@@ -1326,7 +1331,7 @@ tBTM_STATUS BTM_SetEncryption(const RawAddress& bd_addr,
   tBTM_SEC_DEV_REC* p_dev_rec = btm_find_dev(bd_addr);
   if (!p_dev_rec || (transport == BT_TRANSPORT_BR_EDR &&
                      p_dev_rec->hci_handle == BTM_SEC_INVALID_HANDLE)
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
        || (transport == BT_TRANSPORT_LE &&
        p_dev_rec->ble_hci_handle == BTM_SEC_INVALID_HANDLE)
 #endif
@@ -1376,7 +1381,7 @@ tBTM_STATUS BTM_SetEncryption(const RawAddress& bd_addr,
       "Required:0x%x",
       p_dev_rec->hci_handle, p_dev_rec->sec_state, p_dev_rec->sec_flags,
       p_dev_rec->security_required);
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if (transport == BT_TRANSPORT_LE) {
     tACL_CONN* p = btm_bda_to_acl(bd_addr, transport);
     if (p) {
@@ -1420,7 +1425,7 @@ static tBTM_STATUS btm_sec_send_hci_disconnect(tBTM_SEC_DEV_REC* p_dev_rec,
 
       p_dev_rec->sec_state = BTM_SEC_STATE_DISCONNECTING_BOTH;
       break;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     case BTM_SEC_STATE_DISCONNECTING_BLE:
       if (conn_handle == p_dev_rec->ble_hci_handle) return status;
       p_dev_rec->sec_state = BTM_SEC_STATE_DISCONNECTING_BOTH;
@@ -2946,7 +2951,6 @@ static tBTM_STATUS btm_sec_dd_create_conn(tBTM_SEC_DEV_REC* p_dev_rec) {
 
   /* set up the control block to indicated dedicated bonding */
   btm_cb.pairing_flags |= BTM_PAIR_FLAGS_DISC_WHEN_DONE;
-#if (BLE_DISABLED == FALSE)
   if (l2cu_create_conn(p_lcb, BT_TRANSPORT_BR_EDR) == false) {
     LOG(WARNING) << "Security Manager: failed create allocate LCB "
                  << p_dev_rec->bd_addr;
@@ -2954,7 +2958,6 @@ static tBTM_STATUS btm_sec_dd_create_conn(tBTM_SEC_DEV_REC* p_dev_rec) {
     l2cu_release_lcb(p_lcb);
     return (BTM_NO_RESOURCES);
   }
-#endif
   btm_acl_update_busy_level(BTM_BLI_PAGE_EVT);
 
   VLOG(1) << "Security Manager: " << p_dev_rec->bd_addr;
@@ -4083,7 +4086,7 @@ void btm_sec_auth_complete(uint16_t handle, uint8_t status) {
 void btm_sec_encrypt_change(uint16_t handle, uint8_t status,
                             uint8_t encr_enable) {
   tBTM_SEC_DEV_REC* p_dev_rec = btm_find_dev_by_handle(handle);
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tACL_CONN* p_acl = NULL;
   uint8_t acl_idx = btm_handle_to_acl_index(handle);
 #endif
@@ -4130,7 +4133,7 @@ void btm_sec_encrypt_change(uint16_t handle, uint8_t status,
   BTM_TRACE_DEBUG("after update p_dev_rec->sec_flags=0x%x",
                   p_dev_rec->sec_flags);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if (acl_idx != MAX_L2CAP_LINKS) p_acl = &btm_cb.acl_db[acl_idx];
 
   if (p_acl != NULL)
@@ -4200,7 +4203,7 @@ void btm_sec_encrypt_change(uint16_t handle, uint8_t status,
   }
 #else
     btm_sec_check_pending_enc_req (p_dev_rec, BT_TRANSPORT_BR_EDR, encr_enable);
-#endif /* BLE_DISABLED == FALSE */
+#endif /* LEGACY_BT == FALSE */
 
   /* If this encryption was started by peer do not need to do anything */
   if (p_dev_rec->sec_state != BTM_SEC_STATE_ENCRYPTING) {
@@ -4307,7 +4310,9 @@ void btm_sec_connected(const RawAddress& bda, uint16_t handle, uint8_t status,
     }
   } else /* Update the timestamp for this device */
   {
+#if (LEGACY_BT == FALSE)
     bit_shift = (handle == p_dev_rec->ble_hci_handle) ? 8 : 0;
+#endif
     p_dev_rec->timestamp = btm_cb.dev_rec_count++;
     if (p_dev_rec->sm4 & BTM_SM4_CONN_PEND) {
       /* tell L2CAP it's a bonding connection. */
@@ -4352,7 +4357,7 @@ void btm_sec_connected(const RawAddress& bda, uint16_t handle, uint8_t status,
     }
   }
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   p_dev_rec->device_type |= BT_DEVICE_TYPE_BREDR;
 #endif
 
@@ -4659,7 +4664,7 @@ void btm_sec_disconnected(uint16_t handle, uint8_t reason) {
     }
   }
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   btm_ble_update_mode_operation(HCI_ROLE_UNKNOWN, &p_dev_rec->bd_addr,
                                 HCI_SUCCESS);
   /* see sec_flags processing in btm_acl_removed */
@@ -4684,7 +4689,7 @@ void btm_sec_disconnected(uint16_t handle, uint8_t reason) {
   BTM_TRACE_EVENT("%s after update sec_flags=0x%x", __func__,
                   p_dev_rec->sec_flags);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if (p_dev_rec->sec_state == BTM_SEC_STATE_DISCONNECTING_BOTH) {
     p_dev_rec->sec_state = (transport == BT_TRANSPORT_LE)
                                ? BTM_SEC_STATE_DISCONNECTING
@@ -4748,7 +4753,7 @@ void btm_sec_link_key_notification(const RawAddress& p_bda, uint8_t* p_link_key,
       p_dev_rec->link_key_type == BTM_LKEY_TYPE_AUTH_COMB_P_256) {
     p_dev_rec->sec_flags |= BTM_SEC_16_DIGIT_PIN_AUTHED;
   }
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   /* BR/EDR connection, update the encryption key size to be 16 as always */
   p_dev_rec->enc_key_size = 16;
 #endif
@@ -5734,7 +5739,7 @@ void btm_sec_dev_rec_cback_event(tBTM_SEC_DEV_REC* p_dev_rec, uint8_t res,
 
   if (p_dev_rec->p_callback) {
     p_dev_rec->p_callback = NULL;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     if (is_le_transport)
       (*p_callback)(&p_dev_rec->ble.pseudo_addr, BT_TRANSPORT_LE,
                     p_dev_rec->p_ref_data, res);
@@ -5956,12 +5961,12 @@ static void btm_sec_check_pending_enc_req(tBTM_SEC_DEV_REC* p_dev_rec,
     node = list_next(node);
 
     if (p_e->bd_addr == p_dev_rec->bd_addr && p_e->psm == 0
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
         && p_e->transport == transport
 #endif
     ) {
       if (encr_enable == 0 || transport == BT_TRANSPORT_BR_EDR
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
          || p_e->sec_act == BTM_BLE_SEC_ENCRYPT
          || p_e->sec_act == BTM_BLE_SEC_ENCRYPT_NO_MITM
          || (p_e->sec_act == BTM_BLE_SEC_ENCRYPT_MITM &&
@@ -6008,7 +6013,7 @@ static uint16_t btm_sec_set_serv_level4_flags(uint16_t cur_security,
  *
  ******************************************************************************/
 void btm_sec_clear_ble_keys(tBTM_SEC_DEV_REC* p_dev_rec) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   BTM_TRACE_DEBUG("%s() Clearing BLE Keys", __func__);
   p_dev_rec->ble.key_type = BTM_LE_KEY_NONE;
   memset(&p_dev_rec->ble.keys, 0, sizeof(tBTM_SEC_BLE_KEYS));
@@ -6032,7 +6037,7 @@ bool btm_sec_is_a_bonded_dev(const RawAddress& bda) {
   bool is_bonded = false;
 
   if (p_dev_rec &&
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 		  ((p_dev_rec->ble.key_type &&
                      (p_dev_rec->sec_flags & BTM_SEC_LE_LINK_KEY_KNOWN)) ||
 #else
@@ -6056,7 +6061,7 @@ bool btm_sec_is_a_bonded_dev(const RawAddress& bda) {
  ******************************************************************************/
 bool btm_sec_is_le_capable_dev(const RawAddress& bda) {
   bool le_capable = false;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTM_SEC_DEV_REC* p_dev_rec = btm_find_dev(bda);
   if (p_dev_rec &&
       (p_dev_rec->device_type & BT_DEVICE_TYPE_BLE) == BT_DEVICE_TYPE_BLE)

@@ -70,7 +70,7 @@ const tBTA_DM_ACTION bta_dm_action[] = {
     bta_dm_ci_io_req_act,  /* 21 BTA_DM_CI_IO_REQ_EVT */
     bta_dm_ci_rmt_oob_act, /* 22 BTA_DM_CI_RMT_OOB_EVT */
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     bta_dm_add_blekey,        /*  BTA_DM_API_ADD_BLEKEY_EVT           */
     bta_dm_add_ble_device,    /*  BTA_DM_API_ADD_BLEDEVICE_EVT        */
     bta_dm_ble_passkey_reply, /*  BTA_DM_API_BLE_PASSKEY_REPLY_EVT    */
@@ -115,7 +115,7 @@ enum {
   BTA_DM_SEARCH_CANCEL_TRANSAC_CMPL, /* 15 bta_dm_search_cancel_transac_cmpl */
   BTA_DM_DISC_RMT_NAME,              /* 16 bta_dm_disc_rmt_name */
   BTA_DM_API_DI_DISCOVER,            /* 17 bta_dm_di_disc */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   BTA_DM_CLOSE_GATT_CONN, /* 18 bta_dm_close_gatt_conn */
 #endif
   BTA_DM_SEARCH_NUM_ACTIONS /* 19 */
@@ -143,7 +143,7 @@ const tBTA_DM_ACTION bta_dm_search_action[] = {
                                           */
     bta_dm_disc_rmt_name,              /* 16 BTA_DM_DISC_RMT_NAME */
     bta_dm_di_disc                     /* 17 BTA_DM_API_DI_DISCOVER */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     ,
     bta_dm_close_gatt_conn
 #endif
@@ -178,7 +178,7 @@ const uint8_t bta_dm_search_idle_st_table[][BTA_DM_SEARCH_NUM_COLS] = {
                          BTA_DM_SEARCH_IDLE},
     /* API_DI_DISCOVER_EVT */ {BTA_DM_API_DI_DISCOVER, BTA_DM_SEARCH_IGNORE,
                                BTA_DM_SEARCH_ACTIVE}
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     ,
     /* DISC_CLOSE_TOUT_EVT */
     {BTA_DM_CLOSE_GATT_CONN, BTA_DM_SEARCH_IGNORE, BTA_DM_SEARCH_IDLE}
@@ -206,7 +206,7 @@ const uint8_t bta_dm_search_search_active_st_table[][BTA_DM_SEARCH_NUM_COLS] = {
                          BTA_DM_SEARCH_ACTIVE},
     /* API_DI_DISCOVER_EVT */ {BTA_DM_SEARCH_IGNORE, BTA_DM_SEARCH_IGNORE,
                                BTA_DM_SEARCH_ACTIVE}
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     ,
     /* DISC_CLOSE_TOUT_EVT */
     {BTA_DM_CLOSE_GATT_CONN, BTA_DM_SEARCH_IGNORE, BTA_DM_SEARCH_ACTIVE}
@@ -238,7 +238,7 @@ const uint8_t
                              BTA_DM_SEARCH_CANCEL_CMPL, BTA_DM_SEARCH_IDLE},
         /* API_DI_DISCOVER_EVT */ {BTA_DM_SEARCH_IGNORE, BTA_DM_SEARCH_IGNORE,
                                    BTA_DM_SEARCH_CANCELLING}
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
         ,
         /* DISC_CLOSE_TOUT_EVT */
         {BTA_DM_SEARCH_IGNORE, BTA_DM_SEARCH_IGNORE, BTA_DM_SEARCH_CANCELLING}
@@ -268,7 +268,7 @@ const uint8_t bta_dm_search_disc_active_st_table[][BTA_DM_SEARCH_NUM_COLS] = {
                          BTA_DM_DISCOVER_ACTIVE},
     /* API_DI_DISCOVER_EVT */ {BTA_DM_SEARCH_IGNORE, BTA_DM_SEARCH_IGNORE,
                                BTA_DM_DISCOVER_ACTIVE}
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     ,
     /* DISC_CLOSE_TOUT_EVT */
     {BTA_DM_SEARCH_IGNORE, BTA_DM_SEARCH_IGNORE, BTA_DM_DISCOVER_ACTIVE}

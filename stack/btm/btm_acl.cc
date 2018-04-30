@@ -92,7 +92,7 @@ void btm_acl_init(void) {
 tACL_CONN* btm_bda_to_acl(const RawAddress& bda, tBT_TRANSPORT transport) {
   tACL_CONN* p = &btm_cb.acl_db[0];
   uint16_t xx;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   bool btm_bda = p->transport == transport;
 #else
   bool btm_bda = true;
@@ -204,7 +204,7 @@ void btm_acl_created(const RawAddress& bda, DEV_CLASS dc, BD_NAME bdn,
   if (p != (tACL_CONN*)NULL) {
     p->hci_handle = hci_handle;
     p->link_role = link_role;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     p->transport = transport;
 #endif
     VLOG(1) << "Duplicate btm_acl_created: RemBdAddr: " << bda;
@@ -221,7 +221,7 @@ void btm_acl_created(const RawAddress& bda, DEV_CLASS dc, BD_NAME bdn,
       p->link_up_issued = false;
       p->remote_addr = bda;
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
       p->transport = transport;
 #if (BLE_PRIVACY_SPT == TRUE)
       if (transport == BT_TRANSPORT_LE)
@@ -232,8 +232,8 @@ void btm_acl_created(const RawAddress& bda, DEV_CLASS dc, BD_NAME bdn,
       p->conn_addr = *controller_get_interface()->get_address();
 
 #endif
-      p->switch_role_failed_attempts = 0;
 #endif
+      p->switch_role_failed_attempts = 0;
       p->switch_role_state = BTM_ACL_SWKEY_STATE_IDLE;
 
       btm_pm_sm_alloc(xx);
@@ -248,11 +248,11 @@ void btm_acl_created(const RawAddress& bda, DEV_CLASS dc, BD_NAME bdn,
         btsnd_hcic_rmt_ver_req(p->hci_handle);
       }
       p_dev_rec = btm_find_dev_by_handle(hci_handle);
-
+#if (LEGACY_BT == FALSE)
       if (p_dev_rec) {
         BTM_TRACE_DEBUG("device_type=0x%x", p_dev_rec->device_type);
       }
-
+#endif
       if (p_dev_rec && !(transport == BT_TRANSPORT_LE)) {
         /* If remote features already known, copy them and continue connection
          * setup */
@@ -276,7 +276,7 @@ void btm_acl_created(const RawAddress& bda, DEV_CLASS dc, BD_NAME bdn,
           return;
         }
       }
-
+#if (LEGACY_BT == FALSE)
       /* If here, features are not known yet */
       if (p_dev_rec && transport == BT_TRANSPORT_LE) {
 #if (BLE_PRIVACY_SPT == TRUE)
@@ -286,19 +286,18 @@ void btm_acl_created(const RawAddress& bda, DEV_CLASS dc, BD_NAME bdn,
         if (HCI_LE_SLAVE_INIT_FEAT_EXC_SUPPORTED(
                 controller_get_interface()->get_features_ble()->as_array) ||
             link_role == HCI_ROLE_MASTER)
-#if (BLE_DISABLED == FALSE)
         {
           btsnd_hcic_ble_read_remote_feat(p->hci_handle);
         } else
-#endif
         {
           btm_establish_continue(p);
         }
-
       } else {
+#endif
         btm_read_remote_features(p->hci_handle);
+#if (LEGACY_BT == FALSE)
       }
-
+#endif
       /* read page 1 - on rmt feature event for buffer reasons */
       return;
     }
@@ -306,7 +305,7 @@ void btm_acl_created(const RawAddress& bda, DEV_CLASS dc, BD_NAME bdn,
 }
 
 void btm_acl_update_conn_addr(uint16_t conn_handle, const RawAddress& address) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   uint8_t idx = btm_handle_to_acl_index(conn_handle);
   if (idx != MAX_L2CAP_LINKS) {
     btm_cb.acl_db[idx].conn_addr = address;
@@ -352,7 +351,7 @@ void btm_acl_report_role_change(uint8_t hci_status, const RawAddress* bda) {
  ******************************************************************************/
 void btm_acl_removed(const RawAddress& bda, tBT_TRANSPORT transport) {
   tACL_CONN* p;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTM_SEC_DEV_REC* p_dev_rec = NULL;
 #endif
   BTM_TRACE_DEBUG("btm_acl_removed");
@@ -372,7 +371,7 @@ void btm_acl_removed(const RawAddress& bda, tBT_TRANSPORT transport) {
         tBTM_BL_EVENT_DATA evt_data;
         evt_data.event = BTM_BL_DISCN_EVT;
         evt_data.discn.p_bda = &bda;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
         evt_data.discn.handle = p->hci_handle;
         evt_data.discn.transport = p->transport;
 #endif
@@ -381,7 +380,7 @@ void btm_acl_removed(const RawAddress& bda, tBT_TRANSPORT transport) {
 
       btm_acl_update_busy_level(BTM_BLI_ACL_DOWN_EVT);
     }
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     BTM_TRACE_DEBUG(
         "acl hci_handle=%d transport=%d connectable_mode=0x%0x link_role=%d",
         p->hci_handle, p->transport, btm_cb.ble_ctr_cb.inq_var.connectable_mode,
@@ -838,7 +837,7 @@ void BTM_SetDefaultLinkPolicy(uint16_t settings) {
 }
 
 void btm_use_preferred_conn_params(const RawAddress& bda) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tL2C_LCB* p_lcb = l2cu_find_lcb_by_bd_addr(bda, BT_TRANSPORT_LE);
   tBTM_SEC_DEV_REC* p_dev_rec = btm_find_or_alloc_dev(bda);
   /* If there are any preferred connection parameters, set them now */
@@ -904,7 +903,7 @@ void btm_read_remote_version_complete(uint8_t* p) {
         STREAM_TO_UINT16(p_acl_cb->manufacturer, p);
         STREAM_TO_UINT16(p_acl_cb->lmp_subversion, p);
       }
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
       if (p_acl_cb->transport == BT_TRANSPORT_LE) {
         l2cble_notify_le_connection(p_acl_cb->remote_addr);
         btm_use_preferred_conn_params(p_acl_cb->remote_addr);
@@ -1054,7 +1053,6 @@ void btm_read_remote_features_complete(uint8_t* p) {
   /* Copy the received features page */
   STREAM_TO_ARRAY(p_acl_cb->peer_lmp_feature_pages[0], p,
                   HCI_FEATURE_BYTES_PER_PAGE);
-
   if ((HCI_LMP_EXTENDED_SUPPORTED(p_acl_cb->peer_lmp_feature_pages[0])) &&
       (controller_get_interface()
            ->supports_reading_remote_extended_features())) {
@@ -1065,7 +1063,6 @@ void btm_read_remote_features_complete(uint8_t* p) {
     btm_read_remote_ext_features(handle, 1);
     return;
   }
-
   /* Remote controller has no extended features. Process remote controller
      supported features (features page 0). */
   btm_process_remote_ext_features(p_acl_cb, 1);
@@ -1187,7 +1184,7 @@ void btm_establish_continue(tACL_CONN* p_acl_cb) {
   tBTM_BL_EVENT_DATA evt_data;
   BTM_TRACE_DEBUG("btm_establish_continue");
 #if (BTM_BYPASS_EXTRA_ACL_SETUP == FALSE)
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if (p_acl_cb->transport == BT_TRANSPORT_BR_EDR)
 #endif
   {
@@ -1209,7 +1206,7 @@ void btm_establish_continue(tACL_CONN* p_acl_cb) {
     evt_data.conn.p_bdn = p_acl_cb->remote_name;
     evt_data.conn.p_dc = p_acl_cb->remote_dc;
     evt_data.conn.p_features = p_acl_cb->peer_lmp_feature_pages[0];
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     evt_data.conn.handle = p_acl_cb->hci_handle;
     evt_data.conn.transport = p_acl_cb->transport;
 #endif
@@ -1275,8 +1272,12 @@ tBTM_STATUS BTM_SetLinkSuperTout(const RawAddress& remote_bda,
 
     /* Only send if current role is Master; 2.0 spec requires this */
     if (p->link_role == BTM_ROLE_MASTER) {
+#if (LEGACY_BT == FALSE)
       btsnd_hcic_write_link_super_tout(LOCAL_BR_EDR_CONTROLLER_ID,
                                        p->hci_handle, timeout);
+#else
+      return(BTM_NO_RESOURCES);
+#endif
       return (BTM_CMD_STARTED);
     } else {
       return (BTM_SUCCESS);
@@ -1927,14 +1928,14 @@ void btm_qos_setup_complete(uint8_t status, uint16_t handle,
 tBTM_STATUS BTM_ReadRSSI(const RawAddress& remote_bda, tBTM_CMPL_CB* p_cb) {
   tACL_CONN* p;
   tBT_TRANSPORT transport = BT_TRANSPORT_BR_EDR;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBT_DEVICE_TYPE dev_type;
   tBLE_ADDR_TYPE addr_type;
 #endif
 
   /* If someone already waiting on the version, do not allow another */
   if (btm_cb.devcb.p_rssi_cmpl_cb) return (BTM_BUSY);
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   BTM_ReadDevInfo(remote_bda, &dev_type, &addr_type);
   if (dev_type == BT_DEVICE_TYPE_BLE) transport = BT_TRANSPORT_LE;
 #endif
@@ -1967,7 +1968,7 @@ tBTM_STATUS BTM_ReadFailedContactCounter(const RawAddress& remote_bda,
                                          tBTM_CMPL_CB* p_cb) {
   tACL_CONN* p;
   tBT_TRANSPORT transport = BT_TRANSPORT_BR_EDR;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBT_DEVICE_TYPE dev_type;
   tBLE_ADDR_TYPE addr_type;
 #endif
@@ -1975,7 +1976,7 @@ tBTM_STATUS BTM_ReadFailedContactCounter(const RawAddress& remote_bda,
   /* If someone already waiting on the result, do not allow another */
   if (btm_cb.devcb.p_failed_contact_counter_cmpl_cb) return (BTM_BUSY);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   BTM_ReadDevInfo(remote_bda, &dev_type, &addr_type);
   if (dev_type == BT_DEVICE_TYPE_BLE) transport = BT_TRANSPORT_LE;
 #endif
@@ -2010,7 +2011,7 @@ tBTM_STATUS BTM_ReadAutomaticFlushTimeout(const RawAddress& remote_bda,
                                           tBTM_CMPL_CB* p_cb) {
   tACL_CONN* p;
   tBT_TRANSPORT transport = BT_TRANSPORT_BR_EDR;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBT_DEVICE_TYPE dev_type;
   tBLE_ADDR_TYPE addr_type;
 #endif
@@ -2018,7 +2019,7 @@ tBTM_STATUS BTM_ReadAutomaticFlushTimeout(const RawAddress& remote_bda,
   /* If someone already waiting on the result, do not allow another */
   if (btm_cb.devcb.p_automatic_flush_timeout_cmpl_cb) return (BTM_BUSY);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   BTM_ReadDevInfo(remote_bda, &dev_type, &addr_type);
   if (dev_type == BT_DEVICE_TYPE_BLE) transport = BT_TRANSPORT_LE;
 #endif
@@ -2098,7 +2099,7 @@ tBTM_STATUS BTM_ReadTxPower(const RawAddress& remote_bda,
                        BTM_DEV_REPLY_TIMEOUT_MS, btm_read_tx_power_timeout,
                        NULL);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     if (p->transport == BT_TRANSPORT_LE) {
       btm_cb.devcb.read_tx_pwr_addr = remote_bda;
       btsnd_hcic_ble_read_adv_chnl_tx_power();
@@ -2168,7 +2169,7 @@ void btm_read_tx_power_complete(uint8_t* p, bool is_ble) {
             break;
           }
         }
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
       } else {
         STREAM_TO_UINT8(result.tx_power, p);
         result.rem_bda = btm_cb.devcb.read_tx_pwr_addr;
@@ -2646,7 +2647,7 @@ bool btm_acl_notif_conn_collision(const RawAddress& bda) {
     tBTM_BL_EVENT_DATA evt_data;
     evt_data.event = BTM_BL_COLLISION_EVT;
     evt_data.conn.p_bda = &bda;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     evt_data.conn.transport = BT_TRANSPORT_BR_EDR;
     evt_data.conn.handle = BTM_INVALID_HCI_HANDLE;
 #endif

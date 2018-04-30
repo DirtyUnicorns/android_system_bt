@@ -23,7 +23,7 @@
 #include "osi/include/osi.h"
 #include "srvc_eng_int.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include "srvc_battery_int.h"
 #include "srvc_dis_int.h"

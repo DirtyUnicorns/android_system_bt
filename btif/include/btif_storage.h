@@ -207,7 +207,7 @@ bt_status_t btif_storage_remove_hid_info(RawAddress* remote_bd_addr);
  ******************************************************************************/
 bool btif_storage_is_restricted_device(const RawAddress* remote_bd_addr);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 bt_status_t btif_storage_add_ble_bonding_key(RawAddress* remote_bd_addr,
                                              char* key, uint8_t key_type,
                                              uint8_t key_length);

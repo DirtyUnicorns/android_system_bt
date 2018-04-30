@@ -59,7 +59,7 @@
 #include "mca_api.h"
 #endif
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 #include "gatt_api.h"
 #include "smp_api.h"
 #endif

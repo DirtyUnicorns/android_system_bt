@@ -24,7 +24,7 @@
 
 #include "bt_target.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include <string.h>
 
@@ -471,4 +471,4 @@ static char* gattc_state_code(tBTA_GATTC_STATE state_code) {
 }
 
 #endif /* Debug Functions */
-#endif /* BLE_DISABLED */
+#endif /* LEGACY_BT */

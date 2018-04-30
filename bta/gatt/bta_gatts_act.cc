@@ -25,7 +25,7 @@
 
 #include "bt_target.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include <base/logging.h>
 #include <string.h>
@@ -681,4 +681,4 @@ static void bta_gatts_cong_cback(uint16_t conn_id, bool congested) {
     }
   }
 }
-#endif /* BLE_DISABLED */
+#endif /* LEGACY_BT */

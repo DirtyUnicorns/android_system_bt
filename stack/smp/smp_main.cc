@@ -18,7 +18,7 @@
 
 #include "bt_target.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include <string.h>
 #include "smp_int.h"

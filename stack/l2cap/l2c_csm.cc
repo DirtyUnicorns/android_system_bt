@@ -164,18 +164,18 @@ static void l2c_csm_closed(tL2C_CCB* p_ccb, uint16_t event, void* p_data) {
       break;
 
     case L2CEVT_LP_CONNECT_CFM: /* Link came up         */
-#if (BLE_DISABLED == FALSE)
       if (p_ccb->p_lcb->transport == BT_TRANSPORT_LE) {
         p_ccb->chnl_state = CST_ORIG_W4_SEC_COMP;
+#if (LEGACY_BT == FALSE)
         l2ble_sec_access_req(p_ccb->p_lcb->remote_bd_addr, p_ccb->p_rcb->psm,
                              true, &l2c_link_sec_comp2, p_ccb);
+#endif
       } else {
         p_ccb->chnl_state = CST_ORIG_W4_SEC_COMP;
         btm_sec_l2cap_access_req(p_ccb->p_lcb->remote_bd_addr,
                                  p_ccb->p_rcb->psm, p_ccb->p_lcb->handle, true,
                                  &l2c_link_sec_comp, p_ccb);
       }
-#endif
       break;
 
     case L2CEVT_LP_CONNECT_CFM_NEG: /* Link failed          */
@@ -191,11 +191,12 @@ static void l2c_csm_closed(tL2C_CCB* p_ccb, uint16_t event, void* p_data) {
       break;
 
     case L2CEVT_L2CA_CONNECT_REQ: /* API connect request  */
-#if (BLE_DISABLED == FALSE)
       if (p_ccb->p_lcb->transport == BT_TRANSPORT_LE) {
         p_ccb->chnl_state = CST_ORIG_W4_SEC_COMP;
+#if (LEGACY_BT == FALSE)
         l2ble_sec_access_req(p_ccb->p_lcb->remote_bd_addr, p_ccb->p_rcb->psm,
                              true, &l2c_link_sec_comp2, p_ccb);
+#endif
       } else {
         /* Cancel sniff mode if needed */
         {
@@ -215,7 +216,6 @@ static void l2c_csm_closed(tL2C_CCB* p_ccb, uint16_t event, void* p_data) {
                                      p_ccb) == BTM_CMD_STARTED)
           p_ccb->chnl_state = CST_ORIG_W4_SEC_COMP;
       }
-#endif
       break;
 
     case L2CEVT_SEC_COMP:
@@ -250,13 +250,13 @@ static void l2c_csm_closed(tL2C_CCB* p_ccb, uint16_t event, void* p_data) {
       /* stop link timer to avoid race condition between A2MP, Security, and
        * L2CAP */
       alarm_cancel(p_ccb->p_lcb->l2c_lcb_timer);
-#if (BLE_DISABLED == FALSE)
       if (p_ccb->p_lcb->transport == BT_TRANSPORT_LE) {
         p_ccb->chnl_state = CST_TERM_W4_SEC_COMP;
+#if (LEGACY_BT == FALSE)
         l2ble_sec_access_req(p_ccb->p_lcb->remote_bd_addr, p_ccb->p_rcb->psm,
                              false, &l2c_link_sec_comp2, p_ccb);
-      } else
 #endif
+      } else
       {
         /* Cancel sniff mode if needed */
         {
@@ -345,16 +345,16 @@ static void l2c_csm_orig_w4_sec_comp(tL2C_CCB* p_ccb, uint16_t event,
 
     case L2CEVT_SEC_RE_SEND_CMD: /* BTM has enough info to proceed */
     case L2CEVT_LP_CONNECT_CFM:  /* Link came up         */
-#if (BLE_DISABLED == FALSE)
       if (p_ccb->p_lcb->transport == BT_TRANSPORT_LE) {
+#if (LEGACY_BT == FALSE)
         l2ble_sec_access_req(p_ccb->p_lcb->remote_bd_addr, p_ccb->p_rcb->psm,
                              false, &l2c_link_sec_comp2, p_ccb);
+#endif
       } else {
         btm_sec_l2cap_access_req(p_ccb->p_lcb->remote_bd_addr,
                                  p_ccb->p_rcb->psm, p_ccb->p_lcb->handle, true,
                                  &l2c_link_sec_comp, p_ccb);
       }
-#endif
       break;
 
     case L2CEVT_SEC_COMP: /* Security completed success */
@@ -362,9 +362,9 @@ static void l2c_csm_orig_w4_sec_comp(tL2C_CCB* p_ccb, uint16_t event,
        * needed) */
       p_ccb->chnl_state = CST_W4_L2CAP_CONNECT_RSP;
       if (p_ccb->p_lcb->transport == BT_TRANSPORT_LE) {
-#if (BLE_DISABLED == FALSE)
         alarm_set_on_mloop(p_ccb->l2c_ccb_timer, L2CAP_CHNL_CONNECT_TIMEOUT_MS,
                            l2c_ccb_timer_timeout, p_ccb);
+#if (LEGACY_BT == FALSE)
         l2cble_credit_based_conn_req(p_ccb); /* Start Connection     */
 #endif
       } else {
@@ -485,7 +485,7 @@ static void l2c_csm_term_w4_sec_comp(tL2C_CCB* p_ccb, uint16_t event,
                            l2c_ccb_timer_timeout, p_ccb);
       } else {
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
         if (p_ccb->p_lcb->transport == BT_TRANSPORT_LE)
           l2cu_reject_ble_connection(p_ccb->p_lcb, p_ccb->remote_id,
                                      L2CAP_LE_INSUFFICIENT_AUTHENTICATION);
@@ -690,14 +690,16 @@ static void l2c_csm_w4_l2ca_connect_rsp(tL2C_CCB* p_ccb, uint16_t event,
       if (p_ccb->p_lcb->transport == BT_TRANSPORT_LE) {
         /* Result should be OK or Reject */
         if ((!p_ci) || (p_ci->l2cap_result == L2CAP_CONN_OK)) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
           l2cble_credit_based_conn_res(p_ccb, L2CAP_CONN_OK);
+#endif
           p_ccb->chnl_state = CST_OPEN;
           alarm_cancel(p_ccb->l2c_ccb_timer);
         } else {
+#if (LEGACY_BT == FALSE)
           l2cble_credit_based_conn_res(p_ccb, p_ci->l2cap_result);
-          l2cu_release_ccb(p_ccb);
 #endif
+          l2cu_release_ccb(p_ccb);
         }
       } else {
         /* Result should be OK or PENDING */
@@ -719,7 +721,7 @@ static void l2c_csm_w4_l2ca_connect_rsp(tL2C_CCB* p_ccb, uint16_t event,
 
     case L2CEVT_L2CA_CONNECT_RSP_NEG:
       p_ci = (tL2C_CONN_INFO*)p_data;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
       if (p_ccb->p_lcb->transport == BT_TRANSPORT_LE)
         l2cble_credit_based_conn_res(p_ccb, p_ci->l2cap_result);
       else
@@ -1129,7 +1131,7 @@ static void l2c_csm_open(tL2C_CCB* p_ccb, uint16_t event, void* p_data) {
         }
       }
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
       if (p_ccb->p_lcb->transport == BT_TRANSPORT_LE)
         l2cble_send_peer_disc_req(p_ccb);
       else
@@ -1167,7 +1169,7 @@ static void l2c_csm_open(tL2C_CCB* p_ccb, uint16_t event, void* p_data) {
       break;
 
     case L2CEVT_L2CA_SEND_FLOW_CONTROL_CREDIT:
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
       L2CAP_TRACE_DEBUG("%s Sending credit", __func__);
       credit = (uint16_t*)p_data;
       l2cble_send_flow_control_credit(p_ccb, *credit);
@@ -1178,7 +1180,7 @@ static void l2c_csm_open(tL2C_CCB* p_ccb, uint16_t event, void* p_data) {
       credit = (uint16_t*)p_data;
       L2CAP_TRACE_DEBUG("%s Credits received %d", __func__, *credit);
       if ((p_ccb->peer_conn_cfg.credits + *credit) > L2CAP_LE_MAX_CREDIT) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
         /* we have received credits more than max coc credits,
          * so disconnecting the Le Coc Channel
          */

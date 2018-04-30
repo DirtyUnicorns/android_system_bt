@@ -1153,7 +1153,7 @@ static void gap_release_ccb(tGAP_CCB* p_ccb) {
   if (p_ccb->transport == BT_TRANSPORT_LE) L2CA_DEREGISTER_COC(p_ccb->psm);
 }
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 extern void gap_attr_db_init(void);
 #else
 static void gap_attr_db_init(void) {

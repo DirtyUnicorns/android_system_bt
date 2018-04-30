@@ -65,7 +65,7 @@ void btif_dm_proc_loc_oob(bool valid, BT_OCTET16 c, BT_OCTET16 r);
 bool btif_dm_proc_rmt_oob(const RawAddress& bd_addr, BT_OCTET16 p_c,
                           BT_OCTET16 p_r);
 #endif /* BTIF_DM_OOB_TEST */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 /*callout for reading SMP properties from Text file*/
 bool btif_dm_get_smp_config(tBTE_APPL_CFG* p_cfg);
@@ -109,6 +109,6 @@ void btif_dm_update_ble_remote_properties(const RawAddress& bd_addr,
                                           BD_NAME bd_name,
                                           tBT_DEVICE_TYPE dev_type);
 
-#endif /* BLE_DISABLED */
+#endif /* LEGACY_BT */
 
 #endif

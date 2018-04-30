@@ -398,7 +398,7 @@ static int btm_pm_find_acl_ind(const RawAddress& remote_bda) {
 
   for (xx = 0; xx < MAX_L2CAP_LINKS; xx++, p++) {
     if (p->in_use && p->remote_addr == remote_bda
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     	&& p->transport == BT_TRANSPORT_BR_EDR
 #endif
     ) {
@@ -881,7 +881,7 @@ bool btm_pm_device_in_active_or_sniff_mode(void) {
     return true;
   }
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   /* Check BLE states */
   if (btm_ble_get_conn_st() != BLE_CONN_IDLE) {
     BTM_TRACE_DEBUG("%s - BLE state: %x", __func__, btm_ble_get_conn_st());

@@ -28,7 +28,7 @@
 #include "bt_target.h"
 #include "bta_sys.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 #include "bta_gatt_api.h"
 #endif
 
@@ -77,7 +77,7 @@ enum {
   BTA_DM_CI_IO_REQ_EVT,
   BTA_DM_CI_RMT_OOB_EVT,
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   BTA_DM_API_ADD_BLEKEY_EVT,
   BTA_DM_API_ADD_BLEDEVICE_EVT,
   BTA_DM_API_BLE_PASSKEY_REPLY_EVT,
@@ -155,7 +155,7 @@ typedef struct {
   tBTA_SERVICE_MASK services;
   tBTA_DM_SEARCH_CBACK* p_cback;
   tBTA_DM_RS_RES rs_res;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   uint8_t num_uuid;
   tBT_UUID* p_uuid;
 #endif
@@ -169,7 +169,7 @@ typedef struct {
   tBTA_DM_SEARCH_CBACK* p_cback;
   bool sdp_search;
   tBTA_TRANSPORT transport;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   uint8_t num_uuid;
   tBT_UUID* p_uuid;
 #endif
@@ -270,7 +270,7 @@ typedef struct {
   uint8_t new_role;
   RawAddress bd_addr;
   uint8_t hci_status;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   uint16_t handle;
   tBT_TRANSPORT transport;
 #endif
@@ -333,7 +333,7 @@ typedef struct {
   RawAddress bd_addr;
 } tBTA_DM_API_SET_ENCRYPTION;
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 typedef struct {
   BT_HDR hdr;
   RawAddress bd_addr;
@@ -430,7 +430,7 @@ typedef struct {
   tBTA_BLE_ENERGY_INFO_CBACK* p_energy_info_cback;
 } tBTA_DM_API_ENERGY_INFO;
 
-#endif /* BLE_DISABLED */
+#endif /* LEGACY_BT */
 
 /* data type for BTA_DM_API_REMOVE_ACL_EVT */
 typedef struct {
@@ -504,7 +504,7 @@ typedef union {
 
   tBTA_DM_API_SET_ENCRYPTION set_encryption;
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTA_DM_API_ADD_BLEKEY add_ble_key;
   tBTA_DM_API_ADD_BLE_DEVICE add_ble_device;
   tBTA_DM_API_PASSKEY_REPLY ble_passkey_reply;
@@ -564,7 +564,7 @@ typedef struct {
   tBTA_DM_PM_ACTION pm_mode_attempted;
   tBTA_DM_PM_ACTION pm_mode_failed;
   bool remove_dev_pending;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   uint16_t conn_handle;
   tBT_TRANSPORT transport;
 #endif
@@ -575,7 +575,7 @@ typedef struct {
 typedef struct {
   tBTA_DM_PEER_DEVICE peer_device[BTA_DM_NUM_PEER_DEVICE];
   uint8_t count;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   uint8_t le_count;
 #endif
 } tBTA_DM_ACTIVE_LINK;
@@ -627,7 +627,7 @@ typedef struct {
   bool is_bta_dm_active;
   tBTA_DM_ACTIVE_LINK device_list;
   tBTA_DM_SEC_CBACK* p_sec_cback;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTA_BLE_ENERGY_INFO_CBACK* p_energy_info_cback;
 #endif
   uint16_t state;
@@ -696,7 +696,7 @@ typedef struct {
   bool sdp_search;
   bool cancel_pending; /* inquiry cancel is pending */
   tBTA_TRANSPORT transport;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTA_DM_SEARCH_CBACK* p_scan_cback;
   tBTA_GATTC_IF client_if;
   uint8_t num_uuid;
@@ -834,7 +834,7 @@ extern void bta_dm_pm_btm_status(tBTA_DM_MSG* p_data);
 extern void bta_dm_pm_timer(tBTA_DM_MSG* p_data);
 extern void bta_dm_add_ampkey(tBTA_DM_MSG* p_data);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 extern void bta_dm_add_blekey(tBTA_DM_MSG* p_data);
 extern void bta_dm_add_ble_device(tBTA_DM_MSG* p_data);
 extern void bta_dm_ble_passkey_reply(tBTA_DM_MSG* p_data);

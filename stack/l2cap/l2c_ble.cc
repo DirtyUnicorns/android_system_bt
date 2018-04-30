@@ -36,7 +36,7 @@
 #include "osi/include/osi.h"
 #include "stack_config.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 using base::StringPrintf;
 
@@ -1428,4 +1428,4 @@ bool l2ble_sec_access_req(const RawAddress& bd_addr, uint16_t psm,
 
   return status;
 }
-#endif /* (BLE_DISABLED == FALSE) */
+#endif /* (LEGACY_BT == FALSE) */

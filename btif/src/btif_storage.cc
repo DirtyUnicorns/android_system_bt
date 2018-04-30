@@ -165,7 +165,7 @@ extern void btif_gatts_add_bonded_dev_from_nv(const RawAddress& bda);
 /*******************************************************************************
  *  Internal Functions
  ******************************************************************************/
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 static bt_status_t btif_in_fetch_bonded_ble_device(
     const char* remote_bd_addr, int add,
     btif_bonded_devices_t* p_bonded_devices);
@@ -173,7 +173,7 @@ static bt_status_t btif_in_fetch_bonded_ble_device(
 
 static bt_status_t btif_in_fetch_bonded_device(const char* bdstr);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 static bool btif_has_ble_keys(const char* bdstr);
 #endif
 /*******************************************************************************
@@ -403,7 +403,7 @@ static bt_status_t btif_in_fetch_bonded_device(const char* bdstr) {
       bt_linkkey_file_found = false;
     }
   }
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if ((btif_in_fetch_bonded_ble_device(bdstr, false, NULL) !=
        BT_STATUS_SUCCESS) &&
       (!bt_linkkey_file_found)) {
@@ -434,7 +434,7 @@ static bt_status_t btif_in_fetch_bonded_devices(
   memset(p_bonded_devices, 0, sizeof(btif_bonded_devices_t));
 
   bool bt_linkkey_file_found = false;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   int device_type;
 #endif
 
@@ -462,7 +462,7 @@ static bt_status_t btif_in_fetch_bonded_devices(
           BTA_DmAddDevice(bd_addr, dev_class, link_key, 0, 0,
                           (uint8_t)linkkey_type, 0, pin_length);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
           if (btif_config_get_int(name, "DevType", &device_type) &&
               (device_type == BT_DEVICE_TYPE_DUMO)) {
             btif_gatts_add_bonded_dev_from_nv(bd_addr);
@@ -472,7 +472,7 @@ static bt_status_t btif_in_fetch_bonded_devices(
         bt_linkkey_file_found = true;
         p_bonded_devices->devices[p_bonded_devices->num_devices++] = bd_addr;
       } else {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
         bt_linkkey_file_found = false;
 #else
         BTIF_TRACE_ERROR(
@@ -480,7 +480,7 @@ static bt_status_t btif_in_fetch_bonded_devices(
 #endif
       }
     }
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     if (!btif_in_fetch_bonded_ble_device(name, add, p_bonded_devices) &&
         !bt_linkkey_file_found) {
       BTIF_TRACE_DEBUG("Remote device:%s, no link key or ble key found", name);
@@ -492,7 +492,7 @@ static bt_status_t btif_in_fetch_bonded_devices(
   }
   return BT_STATUS_SUCCESS;
 }
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 static void btif_read_le_key(const uint8_t key_type, const size_t key_len,
                              RawAddress bd_addr, const uint8_t addr_type,
                              const bool add_key, bool* device_added,
@@ -790,7 +790,7 @@ bt_status_t btif_storage_remove_bonded_device(
   const char* bdstr = addrstr.c_str();
   BTIF_TRACE_DEBUG("in bd addr:%s", bdstr);
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   btif_storage_remove_ble_bonding_keys(remote_bd_addr);
 #endif
 
@@ -940,7 +940,7 @@ bt_status_t btif_storage_load_bonded_devices(void) {
   return BT_STATUS_SUCCESS;
 }
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 /*******************************************************************************
  *

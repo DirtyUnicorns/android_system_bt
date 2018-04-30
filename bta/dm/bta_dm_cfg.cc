@@ -115,7 +115,7 @@ tBTA_DM_CFG* p_bta_dm_cfg = (tBTA_DM_CFG*)&bta_dm_cfg;
 
 tBTA_DM_RM* p_bta_dm_rm_cfg = (tBTA_DM_RM*)&bta_dm_rm_cfg;
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 #define BTA_DM_NUM_PM_ENTRY \
   23 /* number of entries in bta_dm_pm_cfg except the first */
 #define BTA_DM_NUM_PM_SPEC 15 /* number of entries in bta_dm_pm_spec */
@@ -152,7 +152,7 @@ tBTA_DM_PM_TYPE_QUALIFIER tBTA_DM_PM_CFG
         {BTA_ID_PAN, BTUI_PAN_ID_PANU, 9},  /* PANU spec table */
         {BTA_ID_PAN, BTUI_PAN_ID_NAP, 10},  /* NAP spec table */
         {BTA_ID_HS, BTA_ALL_APP_ID, 11}
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
         ,
         {BTA_ID_GATTC, BTA_ALL_APP_ID, 13}, /* gattc spec table */
         {BTA_ID_GATTS, BTA_ALL_APP_ID, 14} /* gatts spec table */
@@ -426,7 +426,7 @@ tBTA_DM_PM_TYPE_QUALIFIER tBTA_DM_PM_SPEC bta_dm_pm_spec[BTA_DM_NUM_PM_SPEC] = {
           {BTA_DM_PM_NO_ACTION, 0}} /* mode change retry */
      }}
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     /* GATTC : 13 */
     ,
     {(BTA_DM_PM_SNIFF | BTA_DM_PM_PARK), /* allow park & sniff */

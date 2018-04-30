@@ -45,7 +45,7 @@
 
 #include "advertise_data_parser.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include "btm_ble_int.h"
 #include "gatt_int.h"
@@ -2700,4 +2700,4 @@ bool btm_ble_topology_check(tBTM_BLE_STATE_MASK request_state_mask) {
   return rt;
 }
 
-#endif  /* BLE_DISABLED */
+#endif  /* LEGACY_BT */

@@ -24,7 +24,7 @@
 
 #include "bt_target.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include "gatt_int.h"
 #include "l2c_api.h"

@@ -34,7 +34,7 @@
 #include "btm_int_types.h"
 #include "hcidefs.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 #include "smp_api.h"
 #endif
 
@@ -79,7 +79,7 @@ extern tBTM_STATUS btm_ble_start_scan(void);
 extern void btm_ble_create_ll_conn_complete(uint8_t status);
 
 /* LE security function from btm_sec.cc */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 extern void btm_ble_link_sec_check(const RawAddress& bd_addr,
                                    tBTM_LE_AUTH_REQ auth_req,
                                    tBTM_BLE_SEC_REQ_ACT* p_sec_req_act);

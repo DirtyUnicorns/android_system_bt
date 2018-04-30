@@ -59,7 +59,7 @@
 #include "hidd_api.h"
 #endif
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 #include "smp_api.h"
 #endif
 
@@ -129,7 +129,7 @@ static tBTTRC_FUNC_MAP bttrc_set_level_map[] = {
 #endif
     {BTTRC_ID_STK_SDP, BTTRC_ID_STK_SDP, SDP_SetTraceLevel, "TRC_SDP",
      DEFAULT_CONF_TRACE_LEVEL},
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     {BTTRC_ID_STK_SMP, BTTRC_ID_STK_SMP, SMP_SetTraceLevel, "TRC_SMP",
      DEFAULT_CONF_TRACE_LEVEL},
 #endif

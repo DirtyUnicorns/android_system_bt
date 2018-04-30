@@ -24,7 +24,7 @@
 
 #include "bt_target.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include <string.h>
 #include "bt_common.h"
@@ -1120,4 +1120,4 @@ void gatt_client_handle_server_rsp(tGATT_TCB& tcb, uint8_t op_code,
   gatt_cl_send_next_cmd_inq(tcb);
 }
 
-#endif  /* BLE_DISABLED */
+#endif  /* LEGACY_BT */

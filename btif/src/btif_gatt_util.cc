@@ -40,7 +40,7 @@
 #include "btif_util.h"
 #include "osi/include/osi.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #define GATTC_READ_VALUE_TYPE_VALUE 0x0000 /* Attribute value itself */
 #define GATTC_READ_VALUE_TYPE_AGG_FORMAT \
@@ -246,7 +246,7 @@ void btif_gatt_check_encrypted_link(UNUSED_ATTR RawAddress bd_addr,
                                         transport_link) {}
 #endif
 
-#endif  // BLE_DISABLED
+#endif  // LEGACY_BT
 
 void btif_gatt_move_track_adv_data(btgatt_track_adv_info_t* p_dest,
                                    btgatt_track_adv_info_t* p_src) {

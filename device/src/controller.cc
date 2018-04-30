@@ -31,7 +31,7 @@
 #include "osi/include/future.h"
 #include "stack/include/btm_ble_api.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 const bt_event_mask_t BLE_EVENT_MASK = {
     {0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0x1E, 0x7f}};
 
@@ -144,7 +144,7 @@ static future_t* start_up(void) {
     packet_parser->parse_generic_command_complete(response);
   }
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if (HCI_LE_SPT_SUPPORTED(features_classic[0].as_array)) {
     uint8_t simultaneous_le_host =
         HCI_SIMUL_LE_BREDR_SUPPORTED(features_classic[0].as_array)
@@ -173,7 +173,7 @@ static future_t* start_up(void) {
 
     page_number++;
   }
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   // read BLE offload features support from controller
   response = AWAIT_COMMAND(packet_factory->make_ble_read_offload_features_support());
   packet_parser->parse_ble_read_offload_features_response(response, &ble_offload_features_supported);
@@ -193,7 +193,7 @@ static future_t* start_up(void) {
   }
 #endif
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   ble_supported = last_features_classic_page_index >= 1 &&
                   HCI_LE_HOST_SUPPORTED(features_classic[1].as_array);
   if (ble_supported) {
@@ -527,7 +527,7 @@ static void set_ble_resolving_list_max_size(int resolving_list_max_size) {
 
 static uint8_t get_le_all_initiating_phys() {
   uint8_t phy =
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 		  PHY_LE_1M;
 #else
 		  0x00;

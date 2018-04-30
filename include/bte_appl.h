@@ -25,7 +25,7 @@
 #pragma once
 
 typedef struct {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   uint8_t ble_auth_req;
   uint8_t ble_io_cap;
   uint8_t ble_init_key;

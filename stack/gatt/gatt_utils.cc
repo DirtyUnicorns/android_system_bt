@@ -25,7 +25,7 @@
 #include "bt_utils.h"
 #include "osi/include/osi.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 #include <string.h>
 #include "bt_common.h"
 #include "stdio.h"

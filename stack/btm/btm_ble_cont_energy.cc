@@ -19,7 +19,7 @@
 #include <string.h>
 #include "bt_target.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 #include "bt_types.h"
 #include "bt_utils.h"
 #include "btm_ble_api.h"

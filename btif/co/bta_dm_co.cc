@@ -28,7 +28,7 @@
 #include "osi/include/osi.h"
 
 tBTE_APPL_CFG bte_appl_cfg = {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     BTA_LE_AUTH_REQ_SC_MITM_BOND,  // Authentication requirements
     BTM_LOCAL_IO_CAPS_BLE, BTM_BLE_INITIATOR_KEY_SIZE,
     BTM_BLE_RESPONDER_KEY_SIZE, BTM_BLE_MAX_KEY_SIZE
@@ -262,7 +262,7 @@ void bta_dm_sco_co_out_data(BT_HDR** p_buf) { btui_sco_codec_readbuf(p_buf); }
 
 #endif /* (BTM_SCO_HCI_INCLUDED == TRUE) && (BTM_SCO_INCLUDED == TRUE)*/
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 /*******************************************************************************
  *
  * Function         bta_dm_co_le_io_key_req

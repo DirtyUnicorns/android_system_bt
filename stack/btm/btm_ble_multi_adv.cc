@@ -29,7 +29,7 @@
 #include "device/include/controller.h"
 #include "osi/include/alarm.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 #include "ble_advertiser.h"
 #include "ble_advertiser_hci_interface.h"
 #include "btm_int_types.h"

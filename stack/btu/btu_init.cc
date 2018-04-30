@@ -33,7 +33,7 @@
 #include "osi/include/thread.h"
 #include "sdpint.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 #include "gatt_api.h"
 #include "gatt_int.h"
 #include "smp_int.h"
@@ -70,7 +70,7 @@ void btu_init_core(void) {
   l2c_init();
 
   sdp_init();
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   gatt_init();
 
   SMP_Init();
@@ -93,7 +93,7 @@ void btu_free_core(void) {
   /* Free the mandatory core stack components */
   l2c_free();
   sdp_free();
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   gatt_free();
 #endif
 }

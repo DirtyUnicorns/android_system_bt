@@ -152,7 +152,7 @@ tBTM_STATUS BTM_SetDiscoverability(uint16_t inq_mode, uint16_t window,
   bool cod_limited;
 
   BTM_TRACE_API("BTM_SetDiscoverability");
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if (controller_get_interface()->supports_ble()) {
     if (btm_ble_set_discoverability((uint16_t)(inq_mode)) == BTM_SUCCESS) {
       btm_cb.btm_inq_vars.discoverable_mode &= (~BTM_BLE_DISCOVERABLE_MASK);
@@ -540,7 +540,7 @@ tBTM_STATUS BTM_SetConnectability(uint16_t page_mode, uint16_t window,
   tBTM_INQUIRY_VAR_ST* p_inq = &btm_cb.btm_inq_vars;
 
   BTM_TRACE_API("BTM_SetConnectability");
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if (controller_get_interface()->supports_ble()) {
     if (btm_ble_set_connectability(page_mode) != BTM_SUCCESS) {
       return BTM_NO_RESOURCES;
@@ -687,7 +687,7 @@ tBTM_STATUS BTM_CancelInquiry(void) {
               ) {
         btsnd_hcic_inq_cancel();
       }
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
       if (((p_inq->inqparms.mode & BTM_BLE_INQUIRY_MASK) != 0)
 #if (BTA_HOST_INTERLEAVE_SEARCH == TRUE)
           && (active_mode & BTM_BLE_INQ_ACTIVE_MASK)
@@ -759,7 +759,7 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS* p_inqparms,
   /* Only one active inquiry is allowed in this implementation.
      Also do not allow an inquiry if the inquiry filter is being updated */
   if (p_inq->inq_active || p_inq->inqfilt_active) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     /*check if LE observe is already running*/
     if (p_inq->scan_type == INQ_LE_OBSERVE &&
         p_inq->p_inq_ble_results_cb != NULL) {
@@ -782,7 +782,7 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS* p_inqparms,
 
   if ((p_inqparms->mode & BTM_BR_INQUIRY_MASK) != BTM_GENERAL_INQUIRY &&
       (p_inqparms->mode & BTM_BR_INQUIRY_MASK) != BTM_LIMITED_INQUIRY
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
       && (p_inqparms->mode & BTM_BLE_INQUIRY_MASK) != BTM_BLE_GENERAL_INQUIRY
       && (p_inqparms->mode & BTM_BLE_INQUIRY_MASK) != BTM_BLE_LIMITED_INQUIRY
 #endif
@@ -824,7 +824,7 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS* p_inqparms,
 #endif
 
   /* start LE inquiry here if requested */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if ((p_inqparms->mode & BTM_BLE_INQUIRY_MASK)
 #if (BTA_HOST_INTERLEAVE_SEARCH == TRUE)
       &&
@@ -876,7 +876,7 @@ tBTM_STATUS BTM_StartInquiry(tBTM_INQ_PARMS* p_inqparms,
 
     BTM_TRACE_DEBUG("BTM_StartInquiry: mode = %02x", p_inqparms->mode);
   }
-#endif /* end of BLE_DISABLED */
+#endif /* end of LEGACY_BT */
 
   /* we're done with this routine if BR/EDR inquiry is not desired. */
   if ((p_inqparms->mode & BTM_BR_INQUIRY_MASK) == BTM_INQUIRY_NONE)
@@ -970,7 +970,7 @@ tBTM_STATUS BTM_ReadRemoteDeviceName(const RawAddress& remote_bda,
                                      tBT_TRANSPORT transport) {
   VLOG(1) << __func__ << ": bd addr " << remote_bda;
   /* Use LE transport when LE is the only available option */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   if (transport == BT_TRANSPORT_LE) {
     return btm_ble_read_remote_name(remote_bda, p_cb);
   }
@@ -1005,7 +1005,7 @@ tBTM_STATUS BTM_CancelRemoteDeviceName(void) {
 
   /* Make sure there is not already one in progress */
   if (p_inq->remname_active) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     if (BTM_UseLeLink(p_inq->remname_bda)) {
       if (btm_ble_cancel_remote_name(p_inq->remname_bda))
         return (BTM_CMD_STARTED);
@@ -1221,7 +1221,7 @@ void btm_inq_db_reset(void) {
   p_inq->connectable_mode = BTM_NON_CONNECTABLE;
   p_inq->page_scan_type = BTM_SCAN_TYPE_STANDARD;
   p_inq->inq_scan_type = BTM_SCAN_TYPE_STANDARD;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   p_inq->discoverable_mode |= BTM_BLE_NON_DISCOVERABLE;
   p_inq->connectable_mode |= BTM_BLE_NON_CONNECTABLE;
 #endif
@@ -1758,7 +1758,7 @@ void btm_process_inq_results(uint8_t* p, uint8_t inq_res_mode) {
     */
     if (p_inq->inqparms.max_resps &&
         p_inq->inq_cmpl_info.num_resp >= p_inq->inqparms.max_resps
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
         /* new device response */
         &&
         (p_i == NULL ||
@@ -1782,8 +1782,12 @@ void btm_process_inq_results(uint8_t* p, uint8_t inq_res_mode) {
       if (p_inq->inqparms.report_dup && (rssi != 0) && p_i &&
           (i_rssi > p_i->inq_info.results.rssi ||
            p_i->inq_info.results.rssi == 0
+#if (LEGACY_BT == FALSE)
            /* BR/EDR inquiry information update */
-           || (p_i->inq_info.results.device_type & BT_DEVICE_TYPE_BREDR) != 0)) {
+           || (p_i->inq_info.results.device_type & BT_DEVICE_TYPE_BREDR) != 0
+#endif
+          ))
+      {
         p_cur = &p_i->inq_info.results;
         BTM_TRACE_DEBUG("update RSSI new:%d, old:%d", i_rssi, p_cur->rssi);
         p_cur->rssi = i_rssi;
@@ -1815,7 +1819,7 @@ void btm_process_inq_results(uint8_t* p, uint8_t inq_res_mode) {
        inquiry.
     */
     else if (p_i->inq_count == p_inq->inq_counter
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     		&& (p_i->inq_info.results.device_type == BT_DEVICE_TYPE_BREDR)
 #endif
     	)
@@ -1842,7 +1846,7 @@ void btm_process_inq_results(uint8_t* p, uint8_t inq_res_mode) {
 
       if (p_i->inq_count != p_inq->inq_counter)
         p_inq->inq_cmpl_info.num_resp++; /* A new response was found */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
       p_cur->inq_result_type = BTM_INQ_RESULT_BR;
       if (p_i->inq_count != p_inq->inq_counter) {
         p_cur->device_type = BT_DEVICE_TYPE_BREDR;
@@ -1857,7 +1861,7 @@ void btm_process_inq_results(uint8_t* p, uint8_t inq_res_mode) {
       if (!(p_inq->inq_active & BTM_PERIODIC_INQUIRY_ACTIVE) &&
           p_inq->inqparms.max_resps &&
           p_inq->inq_cmpl_info.num_resp == p_inq->inqparms.max_resps
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
           /* BLE scanning is active and received adv */
           && ((((p_inq->inqparms.mode & BTM_BLE_INQUIRY_MASK) != 0) &&
             p_cur->device_type == BT_DEVICE_TYPE_DUMO && p_i->scan_rsp) ||
@@ -1867,7 +1871,7 @@ void btm_process_inq_results(uint8_t* p, uint8_t inq_res_mode) {
         /*                BTM_TRACE_DEBUG("BTMINQ: Found devices, cancelling
          * inquiry..."); */
         btsnd_hcic_inq_cancel();
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
         if ((p_inq->inqparms.mode & BTM_BLE_INQUIRY_MASK) != 0)
           btm_ble_stop_inquiry();
 #endif
@@ -1988,7 +1992,7 @@ void btm_process_inq_complete(uint8_t status, uint8_t mode) {
      * send completion events */
     if (!(p_inq->inq_active & BTM_PERIODIC_INQUIRY_ACTIVE) &&
         p_inq->inqparms.mode == 0) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
       btm_clear_all_pending_le_entry();
 #endif
       p_inq->state = BTM_INQ_INACTIVE_STATE;
@@ -2030,7 +2034,7 @@ void btm_process_inq_complete(uint8_t status, uint8_t mode) {
       p_inq->scan_type == INQ_GENERAL)  // this inquiry is complete
   {
     p_inq->scan_type = INQ_NONE;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     /* check if the LE observe is pending */
     if (p_inq->p_inq_ble_results_cb != NULL) {
       BTM_TRACE_DEBUG("BTM Inq Compl: resuming a pending LE scan");
@@ -2161,7 +2165,7 @@ void btm_process_remote_name(const RawAddress* bda, BD_NAME bdn,
    * the active to false */
   if ((p_inq->remname_active == true) &&
       (!bda || (*bda == p_inq->remname_bda))) {
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
     if (BTM_UseLeLink(p_inq->remname_bda)) {
       if (hci_status == HCI_ERR_UNSPECIFIED)
         btm_ble_cancel_remote_name(p_inq->remname_bda);

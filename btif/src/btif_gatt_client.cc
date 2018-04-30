@@ -38,7 +38,7 @@
 #include "btif_common.h"
 #include "btif_util.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include <hardware/bt_gatt.h>
 

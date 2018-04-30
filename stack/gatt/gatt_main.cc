@@ -24,7 +24,7 @@
 
 #include "bt_target.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include "bt_common.h"
 #include "bt_utils.h"
@@ -1175,4 +1175,4 @@ tGATT_CH_STATE gatt_get_ch_state(tGATT_TCB* p_tcb) {
   return ch_state;
 }
 
-#endif /* BLE_DISABLED */
+#endif /* LEGACY_BT */

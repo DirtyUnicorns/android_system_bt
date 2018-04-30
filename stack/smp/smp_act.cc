@@ -25,7 +25,7 @@
 #include "stack/smp/smp_int.h"
 #include "utils/include/bt_utils.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #define SMP_KEY_DIST_TYPE_MAX 4
 

@@ -24,7 +24,7 @@
 
 #include "bt_target.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include "bt_trace.h"
 #include "bt_utils.h"
@@ -781,4 +781,4 @@ static tGATT_STATUS gatts_send_app_read_request(
     return (tGATT_STATUS)GATT_BUSY; /* max pending command, application error */
 }
 
-#endif /* BLE_DISABLED */
+#endif /* LEGACY_BT */

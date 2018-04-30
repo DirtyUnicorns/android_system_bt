@@ -617,7 +617,7 @@ typedef struct /* contains the parameters passed to the inquiry functions */
 #define BTM_INQ_RESULT_BR 0x01
 #define BTM_INQ_RESULT_BLE 0x02
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 constexpr uint8_t BLE_EVT_CONNECTABLE_BIT = 0;
 constexpr uint8_t BLE_EVT_SCANNABLE_BIT = 1;
 constexpr uint8_t BLE_EVT_DIRECTED_BIT = 2;
@@ -647,7 +647,7 @@ typedef struct {
   uint32_t eir_uuid[BTM_EIR_SERVICE_ARRAY_SIZE];
   bool eir_complete_list;
   tBT_DEVICE_TYPE device_type;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   uint8_t inq_result_type;
   uint8_t ble_addr_type;
   uint16_t ble_evt_type;
@@ -673,7 +673,7 @@ typedef struct {
                                remote name request is
                                required to be done. Having the flag here avoid
                                duplicate store of inquiry results */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   uint16_t remote_name_len;
   tBTM_BD_NAME remote_name;
   uint8_t remote_name_state;
@@ -862,7 +862,7 @@ typedef struct {
   BD_NAME_PTR p_bdn;       /* The device name */
   uint8_t* p_features;     /* pointer to the remote device's features page[0]
                               (supported features page) */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   uint16_t handle;         /* connection handle */
   tBT_TRANSPORT transport; /* link is LE or not */
 #endif
@@ -872,7 +872,7 @@ typedef struct {
 typedef struct {
   tBTM_BL_EVENT event;     /* The event reported. */
   const RawAddress* p_bda; /* The address of the disconnected device */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   uint16_t handle;         /* disconnected connection handle */
   tBT_TRANSPORT transport; /* link is LE link or not */
 #endif
@@ -923,7 +923,7 @@ typedef void(tBTM_BL_CHANGE_CB)(tBTM_BL_EVENT_DATA* p_data);
  * changes. First param is BD address, second is if added or removed.
  * Registered through BTM_AclRegisterForChanges call.
 */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 typedef void(tBTM_ACL_DB_CHANGE_CB)(const RawAddress& p_bda, DEV_CLASS p_dc,
                                     BD_NAME p_bdn, uint8_t* features,
                                     bool is_new, uint16_t handle,
@@ -1400,7 +1400,7 @@ typedef uint8_t tBTM_SP_EVT;
 #define BTM_IO_CAP_IO 1     /* DisplayYesNo */
 #define BTM_IO_CAP_IN 2     /* KeyboardOnly */
 #define BTM_IO_CAP_NONE 3   /* NoInputNoOutput */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 #define BTM_IO_CAP_KBDISP 4 /* Keyboard display */
 #define BTM_IO_CAP_MAX 5
 #else
@@ -1654,7 +1654,7 @@ typedef struct {
   tBTM_LE_KEY_TYPE resp_keys; /* keys to be distributed, bit mask */
 } tBTM_LE_IO_REQ;
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 /* data type for tBTM_LE_COMPLT */
 typedef struct {
   uint8_t reason;
@@ -1723,7 +1723,7 @@ typedef union {
                          /* no callback data for
                           * BTM_LE_KEY_REQ_EVT
                           * and BTM_LE_OOB_REQ_EVT  */
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTM_LE_COMPLT complt; /* BTM_LE_COMPLT_EVT      */
   tSMP_OOB_DATA_TYPE req_oob_type;
 #endif
@@ -1768,7 +1768,7 @@ typedef struct {
   tBTM_AUTH_COMPLETE_CALLBACK* p_auth_complete_callback;
   tBTM_BOND_CANCEL_CMPL_CALLBACK* p_bond_cancel_cmpl_callback;
   tBTM_SP_CALLBACK* p_sp_callback;
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
   tBTM_LE_CALLBACK* p_le_callback;
   tBTM_LE_KEY_CALLBACK* p_le_key_callback;
 #endif

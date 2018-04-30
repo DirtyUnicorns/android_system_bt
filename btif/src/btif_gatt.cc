@@ -36,7 +36,7 @@
 #include "btif_common.h"
 #include "btif_util.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include "bta_api.h"
 #include "bta_gatt_api.h"

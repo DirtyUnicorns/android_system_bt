@@ -24,7 +24,7 @@
 
 #include "bt_target.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include <string.h>
 
@@ -735,4 +735,4 @@ void BTA_GATTC_Refresh(const RawAddress& remote_bda) {
                    base::Bind(&bta_gattc_process_api_refresh, remote_bda));
 }
 
-#endif /* BLE_DISABLED */
+#endif /* LEGACY_BT */

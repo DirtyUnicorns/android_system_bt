@@ -1160,7 +1160,7 @@ static void bta_dm_pm_set_sniff_policy(tBTA_DM_PEER_DEVICE* p_dev,
   BTM_SetLinkPolicy(p_dev->peer_bdaddr, &policy_setting);
 }
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 /*******************************************************************************
  *
  * Function         bta_dm_pm_obtain_controller_state

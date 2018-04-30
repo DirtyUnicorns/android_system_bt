@@ -18,7 +18,7 @@
 
 #include "bta_api.h"
 
-#if (BLE_DISABLED == FALSE)
+#if (LEGACY_BT == FALSE)
 
 #include <stdlib.h>
 #include <string.h>
@@ -147,4 +147,4 @@ bool bta_gatts_co_load_handle_range(
   return false;
 }
 
-#endif  // BLE_DISABLED == FALSE
+#endif  // LEGACY_BT == FALSE
